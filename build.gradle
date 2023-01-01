@@ -1,0 +1,46 @@
+plugins {
+    id "io.quarkus" version "3.0.0.Alpha2"
+}
+
+ext {
+    quarkusPlatformArtifactId = 'quarkus-universe-bom'
+    quarkusPlatformVersion = '2.15.1.Final'
+    quarkusPlatformGroupId = 'io.quarkus'
+}
+
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}") {
+        exclude group: 'com.dajudge.kindcontainer'
+    }
+    implementation 'io.quarkus:quarkus-resteasy-jackson'
+
+    implementation "io.quarkiverse.operatorsdk:quarkus-operator-sdk:5.0.0"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testImplementation 'com.dajudge.kindcontainer:kindcontainer:1.4.0'
+    testImplementation 'io.fabric8:kubernetes-server-mock:6.2.0' // MAKE SURE THIS MATCHES WHAT QUARKUS IS BRINGING IN
+    testImplementation 'org.mockito:mockito-core:4.10.0'
+    testImplementation 'org.assertj:assertj-core:3.23.1'
+
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging.showStandardStreams = true
+}
+
+quarkusBuild {
+    nativeArgs {
+        autoServiceLoaderRegistration = "true"
+        enableAllSecurityServices = "true"
+    }
+}
